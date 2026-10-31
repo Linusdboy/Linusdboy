@@ -152,11 +152,35 @@
 
         let currentWordData = null;
         let savedWords = JSON.parse(localStorage.getItem('lexicon_saved_words') || '[]');
-        let streak = parseInt(localStorage.getItem('lexicon_streak') || '1');
         let quizScore = 0;
         let currentQuizCorrectDef = "";
 
-        document.getElementById('streak-counter').innerText = `${streak} Day Streak`;
+        // Automated Streak Tracker Check
+        function checkAndUpdateStreak() {
+            const lastLoginDate = localStorage.getItem('lexicon_last_login');
+            let streak = parseInt(localStorage.getItem('lexicon_streak') || '1');
+            const today = new Date().toDateString();
+
+            if (!lastLoginDate) {
+                localStorage.setItem('lexicon_last_login', today);
+                localStorage.setItem('lexicon_streak', '1');
+                streak = 1;
+            } else {
+                const diffTime = new Date(today) - new Date(lastLoginDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 1) {
+                    streak += 1;
+                    localStorage.setItem('lexicon_streak', streak);
+                    localStorage.setItem('lexicon_last_login', today);
+                } else if (diffDays > 1) {
+                    streak = 1;
+                    localStorage.setItem('lexicon_streak', '1');
+                    localStorage.setItem('lexicon_last_login', today);
+                }
+            }
+            document.getElementById('streak-counter').innerText = `${streak} Day Streak`;
+        }
 
         // Tab Switching Logic
         function switchTab(tabName) {
@@ -286,18 +310,15 @@
             document.getElementById('quiz-options').innerHTML = "";
 
             try {
-                // Pick random correct word & 3 distractor words
                 let shuffled = [...expansionSeedWords].sort(() => 0.5 - Math.random());
                 let correctWord = shuffled[0];
                 let distractors = shuffled.slice(1, 4);
 
-                // Fetch correct definition
                 const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${correctWord}`);
                 const data = await res.json();
                 const correctDef = data[0].meanings[0].definitions[0].definition;
                 currentQuizCorrectDef = correctDef;
 
-                // Fetch distractor definitions
                 let options = [{ text: correctDef, correct: true }];
                 for (let dist of distractors) {
                     try {
@@ -305,18 +326,16 @@
                         const dData = await dRes.json();
                         options.push({ text: dData[0].meanings[0].definitions[0].definition, correct: false });
                     } catch (e) {
-                        // fallback distractor
                         options.push({ text: `A specialized term relating to ${dist}.`, correct: false });
                     }
                 }
 
-                // Shuffle options
                 options.sort(() => 0.5 - Math.random());
 
                 document.getElementById('quiz-word').innerText = correctWord.charAt(0).toUpperCase() + correctWord.slice(1);
                 
                 const container = document.getElementById('quiz-options');
-                container.innerHTML = options.map((opt, idx) => `
+                container.innerHTML = options.map((opt) => `
                     <button onclick="handleQuizAnswer(this, ${opt.correct})" class="w-full text-left bg-cardInner hover:bg-[#2A2A35] border border-[#2B2B36] p-3.5 rounded-xl text-sm text-slate-200 transition-all cursor-pointer">
                         ${opt.text}
                     </button>
@@ -353,8 +372,9 @@
             document.getElementById('next-quiz-btn').classList.remove('hidden');
         }
 
-        // Initialize
+        // Initialize App
         lucide.createIcons();
+        checkAndUpdateStreak();
         fetchRandomWord();
     </script>
 </body>
