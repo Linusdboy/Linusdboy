@@ -36,7 +36,6 @@
         </h1>
         <div class="flex items-center space-x-1.5 bg-cardBg border border-cardBorder px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 shadow-sm">
             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span id="streak-counter">14 Day Streak</span>
         </div>
     </header>
 
@@ -46,164 +45,148 @@
         <!-- Glow Accent Background -->
         <div class="absolute -top-16 -right-16 w-32 h-32 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Word Title & Pronunciation Action Buttons -->
-        <div class="flex justify-between items-start mb-4">
-            <div>
-                <span id="word-pos" class="text-xs uppercase tracking-widest text-purple-400 font-semibold">
-                    adjective
-                </span>
-                <h2 id="word-title" class="text-4xl font-extrabold text-white mt-1 tracking-tight">
-                    Ethereal
-                </h2>
-                <p id="word-phonetic" class="text-sm text-mutedText mt-1 font-mono">
-                    /əˈθɪr.i.əl/
+        <!-- Loading / Content State -->
+        <div id="card-content" class="transition-opacity duration-300">
+            <!-- Word Title & Pronunciation Action Buttons -->
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="word-pos" class="text-xs uppercase tracking-widest text-purple-400 font-semibold">
+                        loading...
+                    </span>
+                    <h2 id="word-title" class="text-4xl font-extrabold text-white mt-1 tracking-tight">
+                        Discovering
+                    </h2>
+                    <p id="word-phonetic" class="text-sm text-mutedText mt-1 font-mono">
+                        / ... /
+                    </p>
+                </div>
+
+                <div class="flex space-x-2">
+                    <button 
+                        onclick="playAudio()"
+                        class="p-3 bg-[#2A2A35] hover:bg-[#353544] text-purple-400 rounded-full transition-colors cursor-pointer"
+                        title="Pronounce word"
+                    >
+                        <i data-lucide="volume-2" class="w-5 h-5"></i>
+                    </button>
+                    <button 
+                        id="bookmark-btn"
+                        onclick="toggleBookmark()"
+                        class="p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer"
+                        title="Bookmark word"
+                    >
+                        <i data-lucide="bookmark" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Definition Section -->
+            <div class="my-6">
+                <h3 class="text-xs font-semibold text-mutedText uppercase tracking-wider mb-2">
+                    Definition
+                </h3>
+                <p id="word-definition" class="text-lg text-slate-200 leading-relaxed font-light">
+                    "Fetching a fresh, brilliant word from the infinite lexicon..."
                 </p>
             </div>
 
-            <div class="flex space-x-2">
-                <button 
-                    onclick="playAudio()"
-                    class="p-3 bg-[#2A2A35] hover:bg-[#353544] text-purple-400 rounded-full transition-colors cursor-pointer"
-                    title="Pronounce word"
-                >
-                    <i data-lucide="volume-2" class="w-5 h-5"></i>
-                </button>
-                <button 
-                    id="bookmark-btn"
-                    onclick="toggleBookmark()"
-                    class="p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer"
-                    title="Bookmark word"
-                >
-                    <i data-lucide="bookmark" class="w-5 h-5"></i>
-                </button>
+            <!-- Real-World Context / Example -->
+            <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4 mb-6">
+                <h3 class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">
+                    Example
+                </h3>
+                <p id="word-example" class="text-sm text-slate-300 italic">
+                    "..."
+                </p>
             </div>
-        </div>
 
-        <!-- Definition Section -->
-        <div class="my-6">
-            <h3 class="text-xs font-semibold text-mutedText uppercase tracking-wider mb-2">
-                Definition
-            </h3>
-            <p id="word-definition" class="text-lg text-slate-200 leading-relaxed font-light">
-                "Extremely delicate and light in a way that seems too perfect for this world."
-            </p>
-        </div>
-
-        <!-- Real-World Context / Example -->
-        <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4 mb-6">
-            <h3 class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">
-                Example
-            </h3>
-            <p id="word-example" class="text-sm text-slate-300 italic">
-                "The valley was veiled in an ethereal morning mist."
-            </p>
-        </div>
-
-        <!-- Etymology Origin -->
-        <div class="text-xs text-mutedText border-t border-cardBorder pt-4">
-            <span class="font-semibold text-slate-400">Origin: </span> 
-            <span id="word-origin">From Greek aitherios, referring to the upper air or sky.</span>
+            <!-- Etymology Origin -->
+            <div class="text-xs text-mutedText border-t border-cardBorder pt-4">
+                <span class="font-semibold text-slate-400">Origin: </span> 
+                <span id="word-origin">Generated dynamically.</span>
+            </div>
         </div>
     </main>
 
     <!-- Bottom Action Control -->
     <footer class="w-full max-w-md my-4">
         <button 
-            onclick="fetchNextWord()"
+            id="next-btn"
+            onclick="fetchRandomWord()"
             class="w-full bg-accent hover:bg-accentHover text-white font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/30 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
         >
-            <span>Next Unseen Word</span>
+            <span id="btn-text">Next Unseen Word</span>
             <i data-lucide="arrow-right" class="w-5 h-5"></i>
         </button>
     </footer>
 
     <!-- App Logic Script -->
+    <main-script>
     <script>
-        // Curated list ensuring endless variety without repeats
-        const wordPool = [
-            {
-                word: "Ethereal",
-                phonetic: "/əˈθɪr.i.əl/",
-                partOfSpeech: "adjective",
-                definition: "Extremely delicate and light in a way that seems too perfect for this world.",
-                example: "The valley was veiled in an ethereal morning mist.",
-                origin: "From Greek aitherios, referring to the upper air or sky."
-            },
-            {
-                word: "Petrichor",
-                phonetic: "/ˈpɛtrɪkɔːr/",
-                partOfSpeech: "noun",
-                definition: "A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather.",
-                example: "After the summer drought, the sweet petrichor rose from the pavement.",
-                origin: "Coined in 1964 from Greek petra (stone) + ichor (fluid that flows in the veins of gods)."
-            },
-            {
-                word: "Luminous",
-                phonetic: "/ˈluːmɪnəs/",
-                partOfSpeech: "adjective",
-                definition: "Full of or shedding light; bright or shining, especially in the dark.",
-                example: "She gazed up at the luminous expanse of the night sky.",
-                origin: "From Latin luminosus, from lumen (light)."
-            },
-            {
-                word: "Halcyon",
-                phonetic: "/ˈhælsiən/",
-                partOfSpeech: "adjective",
-                definition: "Denoting a period of time in the past that was idyllically happy and peaceful.",
-                example: "They reminisced about the halcyon days of their youth.",
-                origin: "From Greek halkyon, referring to a mythical bird that calmed the seas."
-            },
-            {
-                word: "Sempiternal",
-                phonetic: "/ˌsɛmpɪˈtɜːrnəl/",
-                partOfSpeech: "adjective",
-                definition: "Eternal and unchanging; everlasting.",
-                example: "Poets have long written about the sempiternal beauty of the stars.",
-                origin: "From Latin semper (always) + aeternus (eternal)."
-            },
-            {
-                word: "Ephemeral",
-                phonetic: "/ɪˈfɛmərəl/",
-                partOfSpeech: "adjective",
-                definition: "Lasting for a very short time.",
-                example: "The beauty of cherry blossoms is ephemeral, lasting only a few days.",
-                origin: "From Greek ephemeros (lasting a day)."
-            }
+        // A curated seed list of advanced, sophisticated, and aesthetic words to query from the API
+        const expansionSeedWords = [
+            "serendipity", "halcyon", "mellifluous", "petrichor", "ephemeral", 
+            "Luminous", "sempiternal", "sonder", "ineffable", "susurrus", 
+            "resplendent", "taciturn", "panacea", "solitude", "nebula",
+            "zenith", "quixotic", "alacrity", "cynosure", "effervescent",
+            "evanescent", "halcyon", "labyrinthine", "mellifluous", "nadir",
+            "panache", "quintessence", "reverie", "sanguine", "tintinnabulation"
         ];
 
-        let seenIndices = JSON.parse(localStorage.getItem('lexicon_seen') || '[]');
-        let currentIndex = 0;
+        let seenWords = JSON.parse(localStorage.getItem('lexicon_seen_words') || '[]');
         let isSaved = false;
 
-        function loadWord(index) {
-            const w = wordPool[index];
-            document.getElementById('word-pos').innerText = w.partOfSpeech;
-            document.getElementById('word-title').innerText = w.word;
-            document.getElementById('word-phonetic').innerText = w.phonetic;
-            document.getElementById('word-definition').innerText = `"${w.definition}"`;
-            document.getElementById('word-example').innerText = `"${w.example}"`;
-            document.getElementById('word-origin').innerText = w.origin;
+        async function fetchRandomWord() {
+            const btn = document.getElementById('next-btn');
+            const btnText = document.getElementById('btn-text');
+            btn.disabled = true;
+            btnText.innerText = "Finding word...";
 
-            // Reset bookmark state for new word
-            isSaved = false;
-            updateBookmarkUI();
-        }
+            try {
+                // Pick a random word from our seed generator pool
+                let randomWord = expansionSeedWords[Math.floor(Math.random() * expansionSeedWords.length)];
+                
+                // Fetch definition from Free Dictionary API
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch definition');
+                }
 
-        function fetchNextWord() {
-            if (seenIndices.length >= wordPool.length) {
-                // Reset history if all words have been viewed to maintain infinity loop loop safety
-                seenIndices = [];
+                const data = await response.json();
+                const entry = data[0];
+                const meaning = entry.meanings[0];
+                const definitionObj = meaning.definitions[0];
+
+                const wordData = {
+                    word: entry.word.charAt(0).toUpperCase() + entry.word.slice(1),
+                    phonetic: entry.phonetic || (entry.phonetics.find(p => p.text) ? entry.phonetics.find(p => p.text).text : '/ — /'),
+                    partOfSpeech: meaning.partOfSpeech || 'noun',
+                    definition: definitionObj.definition || 'No definition available.',
+                    example: definitionObj.example || `The concept of ${entry.word} is deeply fascinating.`,
+                    origin: entry.origin || 'Derived from historical roots and linguistic evolution.'
+                };
+
+                // Render to UI
+                document.getElementById('word-pos').innerText = wordData.partOfSpeech;
+                document.getElementById('word-title').innerText = wordData.word;
+                document.getElementById('word-phonetic').innerText = wordData.phonetic;
+                document.getElementById('word-definition').innerText = `"${wordData.definition}"`;
+                document.getElementById('word-example').innerText = `"${wordData.example}"`;
+                document.getElementById('word-origin').innerText = wordData.origin;
+
+                isSaved = false;
+                updateBookmarkUI();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('word-title').innerText = "Resilience";
+                document.getElementById('word-definition').innerText = `"The capacity to recover quickly from difficulties; toughness."`;
+                document.getElementById('word-example').innerText = `"She showed great resilience in pursuit of her goals."`;
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Next Unseen Word";
             }
-
-            // Pick a random index not yet seen in this session cycle
-            let availableIndices = wordPool.map((_, i) => i).filter(i => !seenIndices.includes(i));
-            let randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-            
-            currentIndex = randomIndex;
-            seenIndices.push(currentIndex);
-            localStorage.setItem('lexicon_seen', JSON.stringify(seenIndices));
-
-            loadWord(currentIndex);
         }
 
         function playAudio() {
@@ -227,11 +210,10 @@
             }
         }
 
-        // Initialize Lucide icons
+        // Initialize icons and load first auto-generated word
         lucide.createIcons();
-
-        // Load initial word on page open
-        fetchNextWord();
+        fetchRandomWord();
     </script>
+    </main-script>
 </body>
 </html>
