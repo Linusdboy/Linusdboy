@@ -1,173 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexicon — Daily Vocabulary & Quiz</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0A0A0C',
-                        cardBg: '#1E1E24',
-                        cardBorder: '#2D2D38',
-                        cardInner: '#141418',
-                        accent: '#8B5CF6',
-                        accentHover: '#7C3AED',
-                        mutedText: '#94A3B8',
-                        lightText: '#E2E8F0',
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicon — Daily Vocabulary & Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0A0A0C',
+                        cardBg: '#1E1E24',
+                        cardBorder: '#2D2D38',
+                        cardInner: '#141418',
+                        accent: '#8B5CF6',
+                        accentHover: '#7C3AED',
+                        mutedText: '#94A3B8',
+                        lightText: '#E2E8F0',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-darkBg text-lightText min-h-screen flex flex-col justify-between p-4 font-sans select-none max-w-md mx-auto">
 
-    <!-- Header Bar -->
-    <header class="w-full flex justify-between items-center my-2 px-2">
-        <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">
-            LEXICON
-        </h1>
-        <div class="flex items-center space-x-1.5 bg-cardBg border border-cardBorder px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 shadow-sm">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span id="streak-counter">1 Day Streak</span>
-        </div>
-    </header>
+    <!-- Header Bar -->
+    <header class="w-full flex justify-between items-center my-2 px-2">
+        <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">
+            LEXICON
+        </h1>
+        <div class="flex items-center space-x-1.5 bg-cardBg border border-cardBorder px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 shadow-sm">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span id="streak-counter">1 Day Streak</span>
+        </div>
+    </header>
 
-    <!-- Main Dynamic Content Views -->
-    <div class="flex-1 flex flex-col justify-center my-4">
-        
-        <!-- TAB 1: EXPLORE / DAILY WORD -->
-        <div id="view-explore" class="space-y-4">
-            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-md relative overflow-hidden">
-                <div class="absolute -top-16 -right-16 w-32 h-32 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Main Dynamic Content Views -->
+    <div class="flex-1 flex flex-col justify-center my-4">
+        
+        <!-- TAB 1: EXPLORE / DAILY WORD -->
+        <div id="view-explore" class="space-y-4">
+            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-md relative overflow-hidden">
+                <div class="absolute -top-16 -right-16 w-32 h-32 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <span id="word-pos" class="text-xs uppercase tracking-widest text-purple-400 font-semibold">loading...</span>
-                        <h2 id="word-title" class="text-4xl font-extrabold text-white mt-1 tracking-tight">Discovering</h2>
-                        <p id="word-phonetic" class="text-sm text-mutedText mt-1 font-mono">/ ... /</p>
-                    </div>
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span id="word-pos" class="text-xs uppercase tracking-widest text-purple-400 font-semibold">loading...</span>
+                        <h2 id="word-title" class="text-4xl font-extrabold text-white mt-1 tracking-tight">Discovering</h2>
+                        <p id="word-phonetic" class="text-sm text-mutedText mt-1 font-mono">/ ... /</p>
+                    </div>
 
-                    <div class="flex space-x-2">
-                        <button onclick="playAudio()" class="p-3 bg-[#2A2A35] hover:bg-[#353544] text-purple-400 rounded-full transition-colors cursor-pointer" title="Pronounce word">
-                            <i data-lucide="volume-2" class="w-5 h-5"></i>
-                        </button>
-                        <button id="bookmark-btn" onclick="toggleBookmark()" class="p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer" title="Bookmark word">
-                            <i data-lucide="bookmark" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
+                    <div class="flex space-x-2">
+                        <button onclick="playAudio()" class="p-3 bg-[#2A2A35] hover:bg-[#353544] text-purple-400 rounded-full transition-colors cursor-pointer" title="Pronounce word">
+                            <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        </button>
+                        <button id="bookmark-btn" onclick="toggleBookmark()" class="p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer" title="Bookmark word">
+                            <i data-lucide="bookmark" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
 
-                <div class="my-6">
-                    <h3 class="text-xs font-semibold text-mutedText uppercase tracking-wider mb-2">Definition</h3>
-                    <p id="word-definition" class="text-lg text-slate-200 leading-relaxed font-light">"Fetching a fresh, brilliant word from the infinite lexicon..."</p>
-                </div>
+                <div class="my-6">
+                    <h3 class="text-xs font-semibold text-mutedText uppercase tracking-wider mb-2">Definition</h3>
+                    <p id="word-definition" class="text-lg text-slate-200 leading-relaxed font-light">"Fetching a fresh, brilliant word from the infinite lexicon..."</p>
+                </div>
 
-                <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4 mb-4">
-                    <h3 class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">Example</h3>
-                    <p id="word-example" class="text-sm text-slate-300 italic">"..."</p>
-                </div>
+                <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4 mb-4">
+                    <h3 class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">Example</h3>
+                    <p id="word-example" class="text-sm text-slate-300 italic">"..."</p>
+                </div>
 
-                <div class="text-xs text-mutedText border-t border-cardBorder pt-3">
-                    <span class="font-semibold text-slate-400">Origin: </span> <span id="word-origin">Generated dynamically.</span>
-                </div>
-            </main>
+                <div class="text-xs text-mutedText border-t border-cardBorder pt-3">
+                    <span class="font-semibold text-slate-400">Origin: </span> <span id="word-origin">Generated dynamically.</span>
+                </div>
+            </main>
 
-            <button id="next-btn" onclick="fetchRandomWord()" class="w-full bg-accent hover:bg-accentHover text-white font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/30 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer">
-                <span id="btn-text">Next Unseen Word</span>
-                <i data-lucide="arrow-right" class="w-5 h-5"></i>
-            </button>
-        </div>
+            <button id="next-btn" onclick="fetchRandomWord()" class="w-full bg-accent hover:bg-accentHover text-white font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/30 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer">
+                <span id="btn-text">Next Unseen Word</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
 
-        <!-- TAB 2: QUIZ SECTION -->
-        <div id="view-quiz" class="hidden space-y-4">
-            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs uppercase tracking-widest text-purple-400 font-semibold">Vocabulary Challenge</span>
-                    <span id="quiz-score" class="text-xs font-mono text-mutedText">Score: 0</span>
-                </div>
+        <!-- TAB 2: QUIZ SECTION -->
+        <div id="view-quiz" class="hidden space-y-4">
+            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs uppercase tracking-widest text-purple-400 font-semibold">Vocabulary Challenge</span>
+                    <span id="quiz-score" class="text-xs font-mono text-mutedText">Score: 0</span>
+                </div>
 
-                <h2 id="quiz-word" class="text-3xl font-extrabold text-white mb-4 tracking-tight">Loading Quiz...</h2>
-                <p class="text-xs text-mutedText uppercase tracking-wider mb-3">Select the correct definition:</p>
+                <h2 id="quiz-word" class="text-3xl font-extrabold text-white mb-4 tracking-tight">Loading Quiz...</h2>
+                <p class="text-xs text-mutedText uppercase tracking-wider mb-3">Select the correct definition:</p>
 
-                <div id="quiz-options" class="space-y-3">
-                    <!-- Dynamic options get injected here -->
-                </div>
+                <div id="quiz-options" class="space-y-3">
+                    <!-- Dynamic options get injected here -->
+                </div>
 
-                <div id="quiz-feedback" class="mt-4 text-center text-sm font-semibold hidden"></div>
-            </main>
+                <div id="quiz-feedback" class="mt-4 text-center text-sm font-semibold hidden"></div>
+            </main>
 
-            <button onclick="loadQuizQuestion()" id="next-quiz-btn" class="w-full bg-[#2A2A35] hover:bg-[#353544] text-lightText font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 transition-all cursor-pointer hidden">
-                <span>Next Question</span>
-                <i data-lucide="arrow-right" class="w-5 h-5"></i>
-            </button>
-        </div>
+            <button onclick="loadQuizQuestion()" id="next-quiz-btn" class="w-full bg-[#2A2A35] hover:bg-[#353544] text-lightText font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 transition-all cursor-pointer hidden">
+                <span>Next Question</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </div>
 
-        <!-- TAB 3: SAVED WORDS SECTION -->
-        <div id="view-saved" class="hidden space-y-4">
-            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20 max-h-[60vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-white flex items-center space-x-2">
-                        <i data-lucide="bookmark" class="w-5 h-5 text-purple-400"></i>
-                        <span>Bookmarked Words</span>
-                    </h2>
-                    <button onclick="clearSavedWords()" id="clear-saved-btn" class="text-xs text-rose-400 hover:text-rose-300 font-semibold hidden">Clear All</button>
-                </div>
-                <div id="saved-words-list" class="space-y-3">
-                    <p class="text-sm text-mutedText italic text-center py-8">No saved words yet. Bookmark words while exploring!</p>
-                </div>
-            </main>
-        </div>
+        <!-- TAB 3: SAVED WORDS SECTION -->
+        <div id="view-saved" class="hidden space-y-4">
+            <main class="w-full bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20 max-h-[60vh] overflow-y-auto">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center space-x-2">
+                    <i data-lucide="bookmark" class="w-5 h-5 text-purple-400"></i>
+                    <span>Bookmarked Words</span>
+                </h2>
+                <div id="saved-words-list" class="space-y-3">
+                    <p class="text-sm text-mutedText italic text-center py-8">No saved words yet. Bookmark words while exploring!</p>
+                </div>
+            </main>
+        </div>
 
-    </div>
+    </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="w-full bg-cardBg border border-cardBorder rounded-2xl p-2 flex justify-around items-center shadow-lg">
-        <button onclick="switchTab('explore')" id="nav-explore" class="flex flex-col items-center py-2 px-4 rounded-xl text-purple-400 transition-colors cursor-pointer">
-            <i data-lucide="book-open" class="w-5 h-5 mb-1"></i>
-            <span class="text-[10px] font-semibold tracking-wider uppercase">Explore</span>
-        </button>
-        <button onclick="switchTab('quiz')" id="nav-quiz" class="flex flex-col items-center py-2 px-4 rounded-xl text-mutedText hover:text-lightText transition-colors cursor-pointer">
-            <i data-lucide="help-circle" class="w-5 h-5 mb-1"></i>
-            <span class="text-[10px] font-semibold tracking-wider uppercase">Quiz</span>
-        </button>
-        <button onclick="switchTab('saved')" id="nav-saved" class="flex flex-col items-center py-2 px-4 rounded-xl text-mutedText hover:text-lightText transition-colors cursor-pointer">
-            <i data-lucide="bookmark" class="w-5 h-5 mb-1"></i>
-            <span class="text-[10px] font-semibold tracking-wider uppercase">Saved</span>
-        </button>
-    </nav>
+    <!-- Bottom Navigation Bar -->
+    <nav class="w-full bg-cardBg border border-cardBorder rounded-2xl p-2 flex justify-around items-center shadow-lg">
+        <button onclick="switchTab('explore')" id="nav-explore" class="flex flex-col items-center py-2 px-4 rounded-xl text-purple-400 transition-colors cursor-pointer">
+            <i data-lucide="book-open" class="w-5 h-5 mb-1"></i>
+            <span class="text-[10px] font-semibold tracking-wider uppercase">Explore</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="nav-quiz" class="flex flex-col items-center py-2 px-4 rounded-xl text-mutedText hover:text-lightText transition-colors cursor-pointer">
+            <i data-lucide="help-circle" class="w-5 h-5 mb-1"></i>
+            <span class="text-[10px] font-semibold tracking-wider uppercase">Quiz</span>
+        </button>
+        <button onclick="switchTab('saved')" id="nav-saved" class="flex flex-col items-center py-2 px-4 rounded-xl text-mutedText hover:text-lightText transition-colors cursor-pointer">
+            <i data-lucide="bookmark" class="w-5 h-5 mb-1"></i>
+            <span class="text-[10px] font-semibold tracking-wider uppercase">Saved</span>
+        </button>
+    </nav>
 
-    <!-- App Logic Script -->
-    <script>
-        const expansionSeedWords = [
-            "serendipity", "halcyon", "mellifluous", "petrichor", "ephemeral", 
-            "luminous", "sempiternal", "sonder", "ineffable", "susurrus", 
-            "resplendent", "taciturn", "panacea", "solitude", "nebula",
-            "zenith", "quixotic", "alacrity", "cynosure", "effervescent"
-        ];
+    <!-- App Logic Script -->
+    <script>
+        const expansionSeedWords = [
+            "serendipity", "halcyon", "mellifluous", "petrichor", "ephemeral", 
+            "luminous", "sempiternal", "sonder", "ineffable", "susurrus", 
+            "resplendent", "taciturn", "panacea", "solitude", "nebula",
+            "zenith", "quixotic", "alacrity", "cynosure", "effervescent"
+        ];
 
-        // Backup static dictionary in case API call fails
-        const fallbackWordDB = {
-            "luminous": { word: "Luminous", phonetic: "/ˈluːmɪnəs/", partOfSpeech: "adjective", definition: "Full of or giving off light; glowing brightly.", example: "The luminous moon reflected softly over the quiet lake.", origin: "Latin lumen (light)." },
-            "serendipity": { word: "Serendipity", phonetic: "/ˌsɛrənˈdɪpɪti/", partOfSpeech: "noun", definition: "The occurrence of events by chance in a happy or beneficial way.", example: "Finding her favorite book in a tiny street shop was pure serendipity.", origin: "Coined by Horace Walpole in 1754." },
-            "petrichor": { word: "Petrichor", phonetic: "/ˈpɛtrɪkɔːr/", partOfSpeech: "noun", definition: "A pleasant, distinctive smell that frequently accompanies the first rain after a long period of warm, dry weather.", example: "As the rain hit the hot asphalt, a fresh scent of petrichor filled the air.", origin: "Greek petra (stone) + ichor (fluid)." },
-            "halcyon": { word: "Halcyon", phonetic: "/ˈhælsiən/", partOfSpeech: "adjective", definition: "Denoting a period of time in the past that was idyllically happy and peaceful.", example: "We fondly remembered the halcyon days of our youth.", origin: "Greek halkyon (kingfisher)." },
-            "mellifluous": { word: "Mellifluous", phonetic: "/mɛˈlɪflʊəs/", partOfSpeech: "adjective", definition: "Sweet or musical; pleasant to hear.", example: "The singer captivated the audience with her mellifluous voice.", origin: "Latin mel (honey) + fluere (to flow)." }
-        };
+        let currentWordData = null;
+        let savedWords = JSON.parse(localStorage.getItem('lexicon_saved_words') || '[]');
+        let quizScore = 0;
+        let currentQuizCorrectDef = "";
 
-        let currentWordData = null;
-        let savedWords = JSON.parse(localStorage.getItem('lexicon_saved_words') || '[]');
-        let quizScore = 0;
-        let currentQuizCorrectDef = "";
-        let previousWords = [];
+        // Automated Streak Tracker Check
+        function checkAndUpdateStreak() {
+            const lastLoginDate = localStorage.getItem('lexicon_last_login');
+            let streak = parseInt(localStorage.getItem('lexicon_streak') || '1');
+            const today = new Date().toDateString();
 
-        // Dynamic example sentence generator when API lacks an example
-        function generateContextualExample(word, pos) {
-            const wordLower = word.toLowerCase();
+            if (!lastLoginDate) {
+                localStorage.setItem('lexicon_last_login', today);
+                localStorage.setItem('lexicon_streak', '1');
+                streak = 1;
+            } else {
+                const diffTime = new Date(today) - new Date(lastLoginDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 1) {
+                    streak += 1;
+                    localStorage.setItem('lexicon_streak', streak);
+                    localStorage.setItem('lexicon_last_login', today);
+                } else if (diffDays > 1) {
+                    streak = 1;
+                    localStorage.setItem('lexicon_streak', '1');
+                    localStorage.setItem('lexicon_last_login', today);
+                }
+            }
+            document.getElementById('streak-counter').innerText = `${streak} Day Streak`;
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            ['explore', 'quiz', 'saved'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "flex flex-col items-center py-2 px-4 rounded-xl text-mutedText hover:text-lightText transition-colors cursor-pointer";
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).className = "flex flex-col items-center py-2 px-4 rounded-xl text-purple-400 transition-colors cursor-pointer";
+
+            if (tabName === 'quiz') {
+                loadQuizQuestion();
+            } else if (tabName === 'saved') {
+                renderSavedWords();
+            }
+            lucide.createIcons();
+        }
+
+        // Fetch Explore Word
+        async function fetchRandomWord() {
+            const btn = document.getElementById('next-btn');
+            const btnText = document.getElementById('btn-text');
+            btn.disabled = true;
+            btnText.innerText = "Finding word...";
+
+            try {
+                let randomWord = expansionSeedWords[Math.floor(Math.random() * expansionSeedWords.length)];
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
+                if (!response.ok) throw new Error();
+
+                const data = await response.json();
+                const entry = data[0];
+                const meaning = entry.meanings[0];
+                const definitionObj = meaning.definitions[0];
+
+                currentWordData = {
+                    word: entry.word.charAt(0).toUpperCase() + entry.word.slice(1),
+                    phonetic: entry.phonetic || '/ — /',
+                    partOfSpeech: meaning.partOfSpeech || 'noun',
+                    definition: definitionObj.definition || 'No definition.',
+                    example: definitionObj.example || `The concept of ${entry.word} is fascinating.`,
+                    origin: entry.origin || 'Derived from historical roots.'
+                };
+
+                document.getElementById('word-pos').innerText = currentWordData.partOfSpeech;
+                document.getElementById('word-title').innerText = currentWordData.word;
+                document.getElementById('word-phonetic').innerText = currentWordData.phonetic;
+                document.getElementById('word-definition').innerText = `"${currentWordData.definition}"`;
+                document.getElementById('word-example').innerText = `"${currentWordData.example}"`;
+                document.getElementById('word-origin').innerText = currentWordData.origin;
+
+                updateBookmarkUIState();
+            } catch (error) {
+                currentWordData = {
+                    word: "Resilience",
+                    phonetic: "/rɪˈzɪliəns/",
+                    partOfSpeech: "noun",
+                    definition: "The capacity to recover quickly from difficulties.",
+                    example: "She showed great resilience.",
+                    origin: "Latin resilire."
+                };
+                document.getElementById('word-title').innerText = currentWordData.word;
+                document.getElementById('word-definition').innerText = `"${currentWordData.definition}"`;
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Next Unseen Word";
+            }
+        }
+
+        // Audio Speech
+        function playAudio() {
+            if (!currentWordData) return;
+            const utterance = new SpeechSynthesisUtterance(currentWordData.word);
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Bookmarking
+        function toggleBookmark() {
+            if (!currentWordData) return;
+            const index = savedWords.findIndex(w => w.word === currentWordData.word);
+            if (index > -1) {
+                savedWords.splice(index, 1);
+            } else {
+                savedWords.push(currentWordData);
+            }
+            localStorage.setItem('lexicon_saved_words', JSON.stringify(savedWords));
+            updateBookmarkUIState();
+        }
+
+        function updateBookmarkUIState() {
+            const btn = document.getElementById('bookmark-btn');
+            const isSaved = savedWords.some(w => w.word === currentWordData?.word);
+            if (isSaved) {
+                btn.className = "p-3 rounded-full transition-colors bg-accent text-white cursor-pointer shadow-md shadow-purple-900/50";
+            } else {
+                btn.className = "p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer";
+            }
+        }
+
+        function renderSavedWords() {
+            const container = document.getElementById('saved-words-list');
+            if (savedWords.length === 0) {
+                container.innerHTML = `<p class="text-sm text-mutedText italic text-center py-8">No saved words yet. Bookmark words while exploring!</p>`;
+                return;
+            }
+            container.innerHTML = savedWords.map(w => `
+                <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="text-lg font-bold text-white">${w.word}</h3>
+                        <span class="text-xs text-purple-400 uppercase">${w.partOfSpeech}</span>
+                    </div>
+                    <p class="text-xs text-slate-300">"${w.definition}"</p>
+                </div>
+            `).join('');
+        }
+
+        // Quiz Logic
+        async function loadQuizQuestion() {
+            const feedback = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-quiz-btn');
+            feedback.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+
+            document.getElementById('quiz-word').innerText = "Loading challenge...";
+            document.getElementById('quiz-options').innerHTML = "";
+
+            try {
+                let shuffled = [...expansionSeedWords].sort(() => 0.5 - Math.random());
+                let correctWord = shuffled[0];
+                let distractors = shuffled.slice(1, 4);
+
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${correctWord}`);
+                const data = await res.json();
+                const correctDef = data[0].meanings[0].definitions[0].definition;
+                currentQuizCorrectDef = correctDef;
+
+                let options = [{ text: correctDef, correct: true }];
+                for (let dist of distractors) {
+                    try {
+                        const dRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${dist}`);
+                        const dData = await dRes.json();
+                        options.push({ text: dData[0].meanings[0].definitions[0].definition, correct: false });
+                    } catch (e) {
+                        options.push({ text: `A specialized term relating to ${dist}.`, correct: false });
+                    }
+                }
+
+                options.sort(() => 0.5 - Math.random());
+
+                document.getElementById('quiz-word').innerText = correctWord.charAt(0).toUpperCase() + correctWord.slice(1);
+                
+                const container = document.getElementById('quiz-options');
+                container.innerHTML = options.map((opt) => `
+                    <button onclick="handleQuizAnswer(this, ${opt.correct})" class="w-full text-left bg-cardInner hover:bg-[#2A2A35] border border-[#2B2B36] p-3.5 rounded-xl text-sm text-slate-200 transition-all cursor-pointer">
+                        ${opt.text}
+                    </button>
+                `).join('');
+
+            } catch (err) {
+                document.getElementById('quiz-word').innerText = "Error loading quiz. Try again.";
+            }
+        }
+
+        function handleQuizAnswer(button, isCorrect) {
+            const options = document.getElementById('quiz-options').children;
+            for (let btn of options) {
+                btn.disabled = true;
+                if (btn.innerText.includes(currentQuizCorrectDef)) {
+                    btn.className = "w-full text-left bg-emerald-950/60 border border-emerald-600 p-3.5 rounded-xl text-sm text-emerald-200";
+                } else if (btn === button && !isCorrect) {
+                    btn.className = "w-full text-left bg-rose-950/60 border border-rose-600 p-3.5 rounded-xl text-sm text-rose-200";
+                }
+            }
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+            if (isCorrect) {
+                quizScore += 10;
+                feedback.className = "mt-4 text-center text-sm font-semibold text-emerald-400";
+                feedback.innerText = "Correct! Brilliant work (+10 pts).";
+            } else {
+                feedback.className = "mt-4 text-center text-sm font-semibold text-rose-400";
+                feedback.innerText = "Not quite! Keep learning.";
+            }
+
+            document.getElementById('quiz-score').innerText = `Score: ${quizScore}`;
+            document.getElementById('next-quiz-btn').classList.remove('hidden');
+        }
+
+        // Initialize App
+        lucide.createIcons();
+        checkAndUpdateStreak();
+        fetchRandomWord();
+    </script>
+</body>
+</html>
