@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicon — Daily Vocabulary</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0A0A0C',
+                        cardBg: '#1E1E24',
+                        cardBorder: '#2D2D38',
+                        cardInner: '#141418',
+                        accent: '#8B5CF6',
+                        accentHover: '#7C3AED',
+                        mutedText: '#94A3B8',
+                        lightText: '#E2E8F0',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-darkBg text-lightText min-h-screen flex flex-col items-center justify-between p-4 font-sans select-none">
+
+    <!-- Header Bar -->
+    <header class="w-full max-w-md flex justify-between items-center my-4 px-2">
+        <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">
+            LEXICON
+        </h1>
+        <div class="flex items-center space-x-1.5 bg-cardBg border border-cardBorder px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 shadow-sm">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span id="streak-counter">14 Day Streak</span>
+        </div>
+    </header>
+
+    <!-- Main Word Card -->
+    <main class="w-full max-w-md bg-cardBg border border-cardBorder rounded-3xl p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-md relative overflow-hidden my-auto">
+        
+        <!-- Glow Accent Background -->
+        <div class="absolute -top-16 -right-16 w-32 h-32 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Word Title & Pronunciation Action Buttons -->
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <span id="word-pos" class="text-xs uppercase tracking-widest text-purple-400 font-semibold">
+                    adjective
+                </span>
+                <h2 id="word-title" class="text-4xl font-extrabold text-white mt-1 tracking-tight">
+                    Ethereal
+                </h2>
+                <p id="word-phonetic" class="text-sm text-mutedText mt-1 font-mono">
+                    /əˈθɪr.i.əl/
+                </p>
+            </div>
+
+            <div class="flex space-x-2">
+                <button 
+                    onclick="playAudio()"
+                    class="p-3 bg-[#2A2A35] hover:bg-[#353544] text-purple-400 rounded-full transition-colors cursor-pointer"
+                    title="Pronounce word"
+                >
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
+                </button>
+                <button 
+                    id="bookmark-btn"
+                    onclick="toggleBookmark()"
+                    class="p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer"
+                    title="Bookmark word"
+                >
+                    <i data-lucide="bookmark" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Definition Section -->
+        <div class="my-6">
+            <h3 class="text-xs font-semibold text-mutedText uppercase tracking-wider mb-2">
+                Definition
+            </h3>
+            <p id="word-definition" class="text-lg text-slate-200 leading-relaxed font-light">
+                "Extremely delicate and light in a way that seems too perfect for this world."
+            </p>
+        </div>
+
+        <!-- Real-World Context / Example -->
+        <div class="bg-cardInner border border-[#2B2B36] rounded-2xl p-4 mb-6">
+            <h3 class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-1">
+                Example
+            </h3>
+            <p id="word-example" class="text-sm text-slate-300 italic">
+                "The valley was veiled in an ethereal morning mist."
+            </p>
+        </div>
+
+        <!-- Etymology Origin -->
+        <div class="text-xs text-mutedText border-t border-cardBorder pt-4">
+            <span class="font-semibold text-slate-400">Origin: </span> 
+            <span id="word-origin">From Greek aitherios, referring to the upper air or sky.</span>
+        </div>
+    </main>
+
+    <!-- Bottom Action Control -->
+    <footer class="w-full max-w-md my-4">
+        <button 
+            onclick="fetchNextWord()"
+            class="w-full bg-accent hover:bg-accentHover text-white font-semibold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/30 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+        >
+            <span>Next Unseen Word</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+    </footer>
+
+    <!-- App Logic Script -->
+    <script>
+        // Curated list ensuring endless variety without repeats
+        const wordPool = [
+            {
+                word: "Ethereal",
+                phonetic: "/əˈθɪr.i.əl/",
+                partOfSpeech: "adjective",
+                definition: "Extremely delicate and light in a way that seems too perfect for this world.",
+                example: "The valley was veiled in an ethereal morning mist.",
+                origin: "From Greek aitherios, referring to the upper air or sky."
+            },
+            {
+                word: "Petrichor",
+                phonetic: "/ˈpɛtrɪkɔːr/",
+                partOfSpeech: "noun",
+                definition: "A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather.",
+                example: "After the summer drought, the sweet petrichor rose from the pavement.",
+                origin: "Coined in 1964 from Greek petra (stone) + ichor (fluid that flows in the veins of gods)."
+            },
+            {
+                word: "Luminous",
+                phonetic: "/ˈluːmɪnəs/",
+                partOfSpeech: "adjective",
+                definition: "Full of or shedding light; bright or shining, especially in the dark.",
+                example: "She gazed up at the luminous expanse of the night sky.",
+                origin: "From Latin luminosus, from lumen (light)."
+            },
+            {
+                word: "Halcyon",
+                phonetic: "/ˈhælsiən/",
+                partOfSpeech: "adjective",
+                definition: "Denoting a period of time in the past that was idyllically happy and peaceful.",
+                example: "They reminisced about the halcyon days of their youth.",
+                origin: "From Greek halkyon, referring to a mythical bird that calmed the seas."
+            },
+            {
+                word: "Sempiternal",
+                phonetic: "/ˌsɛmpɪˈtɜːrnəl/",
+                partOfSpeech: "adjective",
+                definition: "Eternal and unchanging; everlasting.",
+                example: "Poets have long written about the sempiternal beauty of the stars.",
+                origin: "From Latin semper (always) + aeternus (eternal)."
+            },
+            {
+                word: "Ephemeral",
+                phonetic: "/ɪˈfɛmərəl/",
+                partOfSpeech: "adjective",
+                definition: "Lasting for a very short time.",
+                example: "The beauty of cherry blossoms is ephemeral, lasting only a few days.",
+                origin: "From Greek ephemeros (lasting a day)."
+            }
+        ];
+
+        let seenIndices = JSON.parse(localStorage.getItem('lexicon_seen') || '[]');
+        let currentIndex = 0;
+        let isSaved = false;
+
+        function loadWord(index) {
+            const w = wordPool[index];
+            document.getElementById('word-pos').innerText = w.partOfSpeech;
+            document.getElementById('word-title').innerText = w.word;
+            document.getElementById('word-phonetic').innerText = w.phonetic;
+            document.getElementById('word-definition').innerText = `"${w.definition}"`;
+            document.getElementById('word-example').innerText = `"${w.example}"`;
+            document.getElementById('word-origin').innerText = w.origin;
+
+            // Reset bookmark state for new word
+            isSaved = false;
+            updateBookmarkUI();
+        }
+
+        function fetchNextWord() {
+            if (seenIndices.length >= wordPool.length) {
+                // Reset history if all words have been viewed to maintain infinity loop loop safety
+                seenIndices = [];
+            }
+
+            // Pick a random index not yet seen in this session cycle
+            let availableIndices = wordPool.map((_, i) => i).filter(i => !seenIndices.includes(i));
+            let randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            
+            currentIndex = randomIndex;
+            seenIndices.push(currentIndex);
+            localStorage.setItem('lexicon_seen', JSON.stringify(seenIndices));
+
+            loadWord(currentIndex);
+        }
+
+        function playAudio() {
+            const wordText = document.getElementById('word-title').innerText;
+            const utterance = new SpeechSynthesisUtterance(wordText);
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleBookmark() {
+            isSaved = !isSaved;
+            updateBookmarkUI();
+        }
+
+        function updateBookmarkUI() {
+            const btn = document.getElementById('bookmark-btn');
+            if (isSaved) {
+                btn.className = "p-3 rounded-full transition-colors bg-accent text-white cursor-pointer shadow-md shadow-purple-900/50";
+            } else {
+                btn.className = "p-3 rounded-full transition-colors bg-[#2A2A35] text-mutedText hover:bg-[#353544] cursor-pointer";
+            }
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Load initial word on page open
+        fetchNextWord();
+    </script>
+</body>
+</html>
